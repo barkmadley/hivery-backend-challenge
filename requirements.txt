@@ -4,9 +4,14 @@
 #
 #    pip-compile
 #
+appdirs==1.4.3            # via black
+attrs==19.1.0             # via black
+black==19.3b0
+click==7.0                # via black
 mock==3.0.5
 mypy-extensions==0.4.1    # via mypy
 mypy==0.720
 six==1.12.0               # via mock
+toml==0.10.0              # via black
 typed-ast==1.4.0          # via mypy
 typing-extensions==3.7.4  # via mypy

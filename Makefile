@@ -12,4 +12,8 @@ dep:
 
 .PHONY: test
 test:
-	python -m unittest discover -s src -p "*_test.py"
+	PYTHONPATH=${PYTHONPATH}:. python -m unittest discover -s src -p "*_test.py"
+
+.PHONY: typecheck
+typecheck:
+	PYTHONPATH=${PYTHONPATH}:. mypy src
