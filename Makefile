@@ -12,8 +12,12 @@ dep:
 
 .PHONY: test
 test:
-	PYTHONPATH=${PYTHONPATH}:. python -m unittest discover -s src -p "*_test.py"
+	PYTHONPATH=${PYTHONPATH}:. python -m unittest discover -p "*_test.py"
 
 .PHONY: typecheck
 typecheck:
-	PYTHONPATH=${PYTHONPATH}:. mypy src
+	PYTHONPATH=${PYTHONPATH}:. mypy .
+
+.PHONY: lint
+lint:
+	PYTHONPATH=${PYTHONPATH}:. pyflakes paranuara
