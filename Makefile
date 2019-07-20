@@ -7,7 +7,7 @@ setup:
 .PHONY: dep
 dep:
 	pip install pip-tools
-	pip-compile > requirements.txt
+	pip-compile
 	pip install -r requirements.txt
 
 .PHONY: test
