@@ -73,7 +73,7 @@ def fruits_from_foods(foods):
     return [food for food in foods if food in FRUITS]
 
 
-def from_json(dict):
+def from_json(dict) -> Person:
     """
         Example person json:
         {
