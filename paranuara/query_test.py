@@ -3,8 +3,9 @@ from decimal import Decimal
 from unittest import TestCase
 
 from paranuara.company import Company
+from paranuara.db import ParanuaraDB
 from paranuara.person import Person
-from paranuara.query import ParanauraQuery, JoinPeopleResponse
+from paranuara.query import JoinPeopleResponse, ParanuaraQuery
 
 
 class CompanyNotFound(Exception):
@@ -42,15 +43,17 @@ def genPerson(id=None, eye_color="red", has_died=False):
     )
 
 
-class ParanauraQueryTest_query_company_employees(TestCase):
+class ParanuaraQueryTest_query_company_employees(TestCase):
     def test_has_employees(self):
         person1 = genPerson(id=1)
         company = Company(id=0, name="test")
-        query = ParanauraQuery(
-            fetch_company_by_id=lambda id: company,
-            fetch_people_by_company_id=lambda id: [person1],
-            fetch_friends_of_person=None,
-            fetch_person_by_id=None,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=lambda id: company,
+                fetch_people_by_company_id=lambda id: [person1],
+                fetch_friends_of_person=None,
+                fetch_person_by_id=None,
+            )
         )
 
         result = query.query_company_employees(company_id=0)
@@ -59,11 +62,13 @@ class ParanauraQueryTest_query_company_employees(TestCase):
 
     def test_no_employees(self):
         company = Company(id=0, name="test")
-        query = ParanauraQuery(
-            fetch_company_by_id=lambda id: company,
-            fetch_people_by_company_id=lambda id: [],
-            fetch_friends_of_person=None,
-            fetch_person_by_id=None,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=lambda id: company,
+                fetch_people_by_company_id=lambda id: [],
+                fetch_friends_of_person=None,
+                fetch_person_by_id=None,
+            )
         )
 
         result = query.query_company_employees(company_id=0)
@@ -74,27 +79,31 @@ class ParanauraQueryTest_query_company_employees(TestCase):
         def fetch_company_by_id(id):
             raise CompanyNotFound()
 
-        query = ParanauraQuery(
-            fetch_company_by_id=fetch_company_by_id,
-            fetch_people_by_company_id=lambda id: [],
-            fetch_friends_of_person=None,
-            fetch_person_by_id=None,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=fetch_company_by_id,
+                fetch_people_by_company_id=lambda id: [],
+                fetch_friends_of_person=None,
+                fetch_person_by_id=None,
+            )
         )
 
         with self.assertRaises(CompanyNotFound):
             query.query_company_employees(company_id=0)
 
 
-class ParanauraQueryTest_query_person(TestCase):
+class ParanuaraQueryTest_query_person(TestCase):
     def test_not_found(self):
         def fetch_person_by_id(id):
             raise PersonNotFound()
 
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=None,
-            fetch_person_by_id=fetch_person_by_id,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=None,
+                fetch_person_by_id=fetch_person_by_id,
+            )
         )
 
         with self.assertRaises(PersonNotFound):
@@ -102,11 +111,13 @@ class ParanauraQueryTest_query_person(TestCase):
 
     def test_found(self):
         person = genPerson(0)
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=None,
-            fetch_person_by_id=lambda id: person,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=None,
+                fetch_person_by_id=lambda id: person,
+            )
         )
 
         result = query.query_person(person_id=0)
@@ -114,7 +125,7 @@ class ParanauraQueryTest_query_person(TestCase):
         self.assertEqual(result, person)
 
 
-class ParanauraQueryTest_query_join_friends(TestCase):
+class ParanuaraQueryTest_query_join_friends(TestCase):
     def test_person1_not_found(self):
         def fetch_person_by_id(id):
             if id == 1:
@@ -122,11 +133,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
             else:
                 return genPerson(2)
 
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=None,
-            fetch_person_by_id=fetch_person_by_id,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=None,
+                fetch_person_by_id=fetch_person_by_id,
+            )
         )
 
         with self.assertRaises(PersonNotFound):
@@ -138,13 +151,14 @@ class ParanauraQueryTest_query_join_friends(TestCase):
                 raise PersonNotFound()
             return genPerson(1)
 
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=None,
-            fetch_person_by_id=fetch_person_by_id,
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=None,
+                fetch_person_by_id=fetch_person_by_id,
+            )
         )
-
         with self.assertRaises(PersonNotFound):
             query.query_join_friends(person1_id=1, person2_id=2)
 
@@ -152,11 +166,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
         person1 = genPerson(1)
         person2 = genPerson(2)
         people = {1: person1, 2: person2}
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=lambda person: [],
-            fetch_person_by_id=lambda id: people.get(id),
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=lambda person: [],
+                fetch_person_by_id=lambda id: people.get(id),
+            )
         )
 
         result = query.query_join_friends(person1_id=1, person2_id=2)
@@ -171,11 +187,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
         person2 = genPerson(2)
         friend_in_common = genPerson(3, eye_color="brown", has_died=False)
         people = {1: person1, 2: person2}
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=lambda person: [friend_in_common],
-            fetch_person_by_id=lambda id: people.get(id),
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_person_by_id=lambda id: people.get(id),
+            )
         )
 
         result = query.query_join_friends(person1_id=1, person2_id=2)
@@ -198,11 +216,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
             1: [friend_in_common, friend_of_person1],
             2: [friend_in_common, friend_of_person2],
         }
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=lambda person: friends_of.get(person.id),
-            fetch_person_by_id=lambda id: people.get(id),
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=lambda person: friends_of.get(person.id),
+                fetch_person_by_id=lambda id: people.get(id),
+            )
         )
 
         result = query.query_join_friends(person1_id=1, person2_id=2)
@@ -219,11 +239,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
         person2 = genPerson(2)
         friend_in_common = genPerson(3, eye_color="black", has_died=False)
         people = {1: person1, 2: person2}
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=lambda person: [friend_in_common],
-            fetch_person_by_id=lambda id: people.get(id),
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_person_by_id=lambda id: people.get(id),
+            )
         )
 
         result = query.query_join_friends(person1_id=1, person2_id=2)
@@ -238,11 +260,13 @@ class ParanauraQueryTest_query_join_friends(TestCase):
         person2 = genPerson(2)
         friend_in_common = genPerson(3, eye_color="brown", has_died=True)
         people = {1: person1, 2: person2}
-        query = ParanauraQuery(
-            fetch_company_by_id=None,
-            fetch_people_by_company_id=None,
-            fetch_friends_of_person=lambda person: [friend_in_common],
-            fetch_person_by_id=lambda id: people.get(id),
+        query = ParanuaraQuery(
+            db=ParanuaraDB(
+                fetch_company_by_id=None,
+                fetch_people_by_company_id=None,
+                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_person_by_id=lambda id: people.get(id),
+            )
         )
 
         result = query.query_join_friends(person1_id=1, person2_id=2)
