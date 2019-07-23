@@ -3,17 +3,9 @@ from decimal import Decimal
 from unittest import TestCase
 
 from paranuara.company import Company
-from paranuara.db import ParanuaraDB
+from paranuara.db import CompanyNotFound, ParanuaraDB, PersonNotFound
 from paranuara.person import Person
 from paranuara.query import JoinPeopleResponse, ParanuaraQuery
-
-
-class CompanyNotFound(Exception):
-    pass
-
-
-class PersonNotFound(Exception):
-    pass
 
 
 def genPerson(id=None, eye_color="red", has_died=False):
