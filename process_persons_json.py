@@ -1,16 +1,11 @@
+import json
+import os
 from argparse import ArgumentParser
 
-import os
-import json
 from flanker.addresslib import address
 
-
 from paranuara.person import from_json
-
-
-def open_file(path):
-    path = os.path.realpath(path)
-    return open(path)
+from util import open_file
 
 
 def main():
