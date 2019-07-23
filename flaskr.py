@@ -1,13 +1,13 @@
 import json
 import os
+from typing import Any, Dict, List
 
 from flask import Flask, jsonify
 
+from in_memory_db import InMemoryDB
 from paranuara.company import from_json as company_from_json
 from paranuara.person import from_json as person_from_json
 from paranuara.query import ParanuaraQuery
-
-from in_memory_db import InMemoryDB
 
 
 def person_to_json(person):
@@ -16,11 +16,11 @@ def person_to_json(person):
     return dict
 
 
-def init_app(companies: str, people: str) -> ParanuaraQuery:
-    companies_json = json.load(open(companies))
+def init_app(companies_file: str, people_file: str) -> ParanuaraQuery:
+    companies_json = json.load(open(companies_file))
     companies = [company_from_json(company_dict) for company_dict in companies_json]
 
-    people_json = json.load(open(people))
+    people_json = json.load(open(people_file))
     people = [person_from_json(person_dict) for person_dict in people_json]
 
     db = InMemoryDB(companies, people)

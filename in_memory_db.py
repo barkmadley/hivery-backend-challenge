@@ -4,7 +4,8 @@ from paranuara.company import Company
 from paranuara.db import CompanyNotFound, ParanuaraDB, PersonNotFound
 from paranuara.person import Person
 
-class InMemoryDB:
+
+class InMemoryDB(ParanuaraDB):
     def __init__(self, companies: List[Company], people: List[Person]) -> None:
         self.companies = companies
         self.people = people
