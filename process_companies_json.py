@@ -3,14 +3,12 @@ import os
 from argparse import ArgumentParser
 
 from paranuara.company import from_json
-from util import open_file
+from cli_util import add_companies_arg
 
 
 def main():
     parser = ArgumentParser(description="Process companies.json files")
-    parser.add_argument(
-        "companies", metavar="file", type=open_file, help="companies.json filename"
-    )
+    add_companies_arg(parser)
     args = parser.parse_args()
     companies = json.load(args.companies)
     for company_dict in companies:

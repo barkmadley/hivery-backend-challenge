@@ -5,14 +5,12 @@ from argparse import ArgumentParser
 from flanker.addresslib import address
 
 from paranuara.person import from_json
-from util import open_file
+from cli_util import add_people_arg
 
 
 def main():
     parser = ArgumentParser(description="Process people.json files")
-    parser.add_argument(
-        "people", metavar="file", type=open_file, help="people.json filename"
-    )
+    add_people_arg(parser)
     args = parser.parse_args()
     people = json.load(args.people)
     foods = set()
