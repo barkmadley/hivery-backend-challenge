@@ -3,11 +3,14 @@ from typing import Callable, List
 from paranuara.company import Company
 from paranuara.person import Person
 
+
 class CompanyNotFound(Exception):
     pass
 
+
 class PersonNotFound(Exception):
     pass
+
 
 class ParanuaraDB:
     def __init__(

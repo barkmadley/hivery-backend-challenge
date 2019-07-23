@@ -10,10 +10,7 @@ JoinPeopleResponse = namedtuple(
 
 
 class ParanuaraQuery:
-    def __init__(
-        self,
-        db: ParanuaraDB,
-    ) -> None:
+    def __init__(self, db: ParanuaraDB) -> None:
         self.db = db
 
     def query_company_employees(self, company_id: int) -> List[Person]:
