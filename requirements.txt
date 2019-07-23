@@ -5,19 +5,30 @@
 #    pip-compile
 #
 appdirs==1.4.3            # via black
-attrs==19.1.0             # via black
+asn1crypto==0.24.0        # via cryptography
+attrs==19.1.0             # via black, flanker
 black==19.3b0
+cffi==1.12.3              # via cryptography
+chardet==3.0.4            # via flanker
 click==7.0                # via black, flask
-flask===1.1.1
+cryptography==2.7         # via flanker
+flanker==0.9.0
+flask==1.1.1
+idna==2.8                 # via flanker
 itsdangerous==1.1.0       # via flask
 jinja2==2.10.1            # via flask
 markupsafe==1.1.1         # via jinja2
 mock==3.0.5
 mypy-extensions==0.4.1    # via mypy
 mypy==0.720
+ply==3.11                 # via flanker
+pycparser==2.19           # via cffi
 pyflakes==2.1.1
-six==1.12.0               # via mock
+regex==2019.6.8           # via flanker
+six==1.12.0               # via cryptography, flanker, mock, tld
+tld==0.9.3                # via flanker
 toml==0.10.0              # via black
 typed-ast==1.4.0          # via mypy
 typing-extensions==3.7.4  # via mypy
+webob==1.8.5              # via flanker
 werkzeug==0.15.5          # via flask

@@ -2,7 +2,8 @@ import json
 import os
 from typing import Any, Dict, List
 
-from flask import Flask, jsonify, abort
+from flanker.addresslib import address
+from flask import Flask, abort, jsonify
 
 from in_memory_db import InMemoryDB
 from paranuara.company import from_json as company_from_json
@@ -12,9 +13,16 @@ from paranuara.query import ParanuaraQuery
 
 
 def person_to_json(person):
-    dict = person._asdict()
-    dict["balance"] = str(dict["balance"])
-    return dict
+    email = address.parse(person.email)
+    username = None
+    if email:
+        username = email.mailbox
+    return {
+        "username": username,
+        "age": str(person.age),
+        "fruits": person.fruits,
+        "vegetables": person.vegetables,
+    }
 
 
 def init_app(companies_file: str, people_file: str) -> ParanuaraQuery:
