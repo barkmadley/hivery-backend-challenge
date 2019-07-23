@@ -2,10 +2,11 @@ import json
 import os
 from typing import Any, Dict, List
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 
 from in_memory_db import InMemoryDB
 from paranuara.company import from_json as company_from_json
+from paranuara.db import CompanyNotFound, PersonNotFound
 from paranuara.person import from_json as person_from_json
 from paranuara.query import ParanuaraQuery
 
@@ -52,14 +53,20 @@ def create_app(test_config=None):
 
     @app.route("/company/<int:company_id>/employees")
     def company_employees(company_id):
-        people = query.query_company_employees(company_id)
-        json = [person_to_json(person) for person in people]
-        return jsonify(json)
+        try:
+            people = query.query_company_employees(company_id)
+            json = [person_to_json(person) for person in people]
+            return jsonify(json)
+        except CompanyNotFound:
+            return abort(404)
 
     @app.route("/person/<int:person_id>")
     def person(person_id):
-        result = query.query_person(person_id)
-        return jsonify(person_to_json(result))
+        try:
+            result = query.query_person(person_id)
+            return jsonify(person_to_json(result))
+        except PersonNotFound:
+            return abort(404)
 
     @app.route("/person/<int:person1_id>/friends_join/<int:person2_id>")
     def friends_join(person1_id, person2_id):
