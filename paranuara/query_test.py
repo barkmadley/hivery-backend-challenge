@@ -8,7 +8,7 @@ from paranuara.person import Person
 from paranuara.query import JoinPeopleResponse, ParanuaraQuery
 
 
-def genPerson(id=None, eye_color="red", has_died=False):
+def generate_person(id=None, eye_color="red", has_died=False):
     return Person(
         id=id,
         mongo_id="mongo_id",
@@ -35,7 +35,7 @@ def genPerson(id=None, eye_color="red", has_died=False):
 
 class ParanuaraQueryTest_query_company_employees(TestCase):
     def test_has_employees(self):
-        person1 = genPerson(id=1)
+        person1 = generate_person(id=1)
         company = Company(id=0, name="test")
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -100,7 +100,7 @@ class ParanuaraQueryTest_query_person(TestCase):
             query.query_person(person_id=0)
 
     def test_found(self):
-        person = genPerson(0)
+        person = generate_person(0)
         query = ParanuaraQuery(
             db=ParanuaraDB(
                 fetch_company_by_id=None,
@@ -121,7 +121,7 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
             if id == 1:
                 raise PersonNotFound()
             else:
-                return genPerson(2)
+                return generate_person(2)
 
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -139,7 +139,7 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         def fetch_person_by_id(id):
             if id == 2:
                 raise PersonNotFound()
-            return genPerson(1)
+            return generate_person(1)
 
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -153,8 +153,8 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
             query.query_join_friends(person1_id=1, person2_id=2)
 
     def test_no_friends(self):
-        person1 = genPerson(1)
-        person2 = genPerson(2)
+        person1 = generate_person(1)
+        person2 = generate_person(2)
         people = {1: person1, 2: person2}
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -173,9 +173,9 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_1_friend_in_common(self):
-        person1 = genPerson(1)
-        person2 = genPerson(2)
-        friend_in_common = genPerson(3, eye_color="brown", has_died=False)
+        person1 = generate_person(1)
+        person2 = generate_person(2)
+        friend_in_common = generate_person(3, eye_color="brown", has_died=False)
         people = {1: person1, 2: person2}
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -196,11 +196,11 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_intersection(self):
-        person1 = genPerson(1)
-        person2 = genPerson(2)
-        friend_in_common = genPerson(3, eye_color="brown", has_died=False)
-        friend_of_person1 = genPerson(4, eye_color="brown", has_died=False)
-        friend_of_person2 = genPerson(5, eye_color="brown", has_died=False)
+        person1 = generate_person(1)
+        person2 = generate_person(2)
+        friend_in_common = generate_person(3, eye_color="brown", has_died=False)
+        friend_of_person1 = generate_person(4, eye_color="brown", has_died=False)
+        friend_of_person2 = generate_person(5, eye_color="brown", has_died=False)
         people = {1: person1, 2: person2}
         friends_of = {
             1: [friend_in_common, friend_of_person1],
@@ -225,9 +225,9 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_eye_color_filter(self):
-        person1 = genPerson(1)
-        person2 = genPerson(2)
-        friend_in_common = genPerson(3, eye_color="black", has_died=False)
+        person1 = generate_person(1)
+        person2 = generate_person(2)
+        friend_in_common = generate_person(3, eye_color="black", has_died=False)
         people = {1: person1, 2: person2}
         query = ParanuaraQuery(
             db=ParanuaraDB(
@@ -246,9 +246,9 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_has_died_filter(self):
-        person1 = genPerson(1)
-        person2 = genPerson(2)
-        friend_in_common = genPerson(3, eye_color="brown", has_died=True)
+        person1 = generate_person(1)
+        person2 = generate_person(2)
+        friend_in_common = generate_person(3, eye_color="brown", has_died=True)
         people = {1: person1, 2: person2}
         query = ParanuaraQuery(
             db=ParanuaraDB(
