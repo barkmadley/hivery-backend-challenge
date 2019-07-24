@@ -4,3 +4,4 @@ black==19.3b0
 pyflakes==2.1.1
 flask==1.1.1
 flanker==0.9.0
+Flask-PyMongo==2.3.0

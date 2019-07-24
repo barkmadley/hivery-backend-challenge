@@ -13,6 +13,7 @@ chardet==3.0.4            # via flanker
 click==7.0                # via black, flask
 cryptography==2.7         # via flanker
 flanker==0.9.0
+flask-pymongo==2.3.0
 flask==1.1.1
 idna==2.8                 # via flanker
 itsdangerous==1.1.0       # via flask
@@ -24,6 +25,7 @@ mypy==0.720
 ply==3.11                 # via flanker
 pycparser==2.19           # via cffi
 pyflakes==2.1.1
+pymongo==3.8.0            # via flask-pymongo
 regex==2019.6.8           # via flanker
 six==1.12.0               # via cryptography, flanker, mock, tld
 tld==0.9.3                # via flanker

@@ -4,8 +4,10 @@ from typing import Any, Dict, List
 
 from flanker.addresslib import address
 from flask import Flask, abort, jsonify
+from flask_pymongo import PyMongo
 
 from in_memory_db import InMemoryDB
+from mongo_db import MongoDB
 from paranuara.company import from_json as company_from_json
 from paranuara.db import CompanyNotFound, PersonNotFound
 from paranuara.person import (
@@ -44,16 +46,17 @@ def person_to_simple_json(person: Person) -> Dict[str, Any]:
     }
 
 
-def init_app(companies_file: str, people_file: str) -> ParanuaraQuery:
-    companies_json = json.load(open(companies_file))
-    companies = [company_from_json(company_dict) for company_dict in companies_json]
+class DBNotConfigured(Exception):
+    pass
 
-    people_json = json.load(open(people_file))
-    people = [person_from_json(person_dict) for person_dict in people_json]
 
-    db = InMemoryDB(companies, people)
-
-    return ParanuaraQuery(db=db)
+def init_db(companies: List[Company], people: List[Person], app):
+    if app.config["DB"] == "inmemory":
+        return InMemoryDB(companies, people)
+    elif app.config["DB"] == "mongo":
+        assert app.config["MONGO_URI"]
+        return MongoDB(companies, people, PyMongo(app))
+    raise DBNotConfigured()
 
 
 def create_app(test_config=None):
@@ -65,7 +68,7 @@ def create_app(test_config=None):
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
-        app.config.from_object('config.DevConfig')
+        app.config.from_object("config.DevConfig")
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -76,7 +79,14 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    query = init_app(app.config["COMPANIES_FILE"], app.config["PEOPLE_FILE"])
+    companies_json = json.load(open(app.config["COMPANIES_FILE"]))
+    companies = [company_from_json(company_dict) for company_dict in companies_json]
+
+    people_json = json.load(open(app.config["PEOPLE_FILE"]))
+    people = [person_from_json(person_dict) for person_dict in people_json]
+
+    db = init_db(companies, people, app)
+    query = ParanuaraQuery(db=db)
 
     @app.route("/company/<int:company_id>/employees")
     def company_employees(company_id):
