@@ -30,8 +30,6 @@ def genPerson(id=None, eye_color="red", has_died=False):
         friends=[id + 1],
         greeting="greeting",
         favourite_food=["favouriteFoods"],
-        fruits=[],
-        vegetables=[],
     )
 
 
