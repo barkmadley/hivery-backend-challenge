@@ -1,15 +1,23 @@
 from typing import List
 
-from paranuara.company import Company, company_from_json
+from paranuara.company import Company, company_from_json, json_from_company
 from paranuara.db import CompanyNotFound, ParanuaraDB, PersonNotFound
-from paranuara.person import Person, person_from_json
+from paranuara.person import Person, json_from_person, person_from_json
 
 
 class MongoDB(ParanuaraDB):
     def __init__(self, companies: List[Company], people: List[Person], mongo) -> None:
         self.mongo = mongo
-        # TODO: clear db
-        # TODO: load companies, people
+        for company in companies:
+            company_dict = json_from_company(company)
+            self.mongo.db.company.replace_one(
+                {"index": company_dict["index"]}, company_dict, upsert=True
+            )
+        for person in people:
+            person_dict = json_from_person(person)
+            self.mongo.db.person.replace_one(
+                {"_id": person_dict["_id"]}, person_dict, upsert=True
+            )
         # TODO: setup index: company.index
         # TODO: setup index: person.index
         # TODO: setup index: person.company_id
