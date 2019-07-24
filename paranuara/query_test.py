@@ -8,7 +8,7 @@ from paranuara.person import Person
 from paranuara.query import JoinPeopleResponse, ParanuaraQuery
 
 
-def generate_person(id=None, eye_color="red", has_died=False):
+def generate_person(id=None, eye_color="red", has_died=False, friends=[]):
     return Person(
         id=id,
         mongo_id="mongo_id",
@@ -27,7 +27,7 @@ def generate_person(id=None, eye_color="red", has_died=False):
         about="about",
         registered=datetime.now(),
         tags=["tags"],
-        friends=[id + 1],
+        friends=friends,
         greeting="greeting",
         favourite_food=["favouriteFoods"],
     )
@@ -41,7 +41,7 @@ class ParanuaraQueryTest_query_company_employees(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=lambda id: company,
                 fetch_people_by_company_id=lambda id: [person1],
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=None,
             )
         )
@@ -56,7 +56,7 @@ class ParanuaraQueryTest_query_company_employees(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=lambda id: company,
                 fetch_people_by_company_id=lambda id: [],
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=None,
             )
         )
@@ -73,7 +73,7 @@ class ParanuaraQueryTest_query_company_employees(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=fetch_company_by_id,
                 fetch_people_by_company_id=lambda id: [],
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=None,
             )
         )
@@ -91,7 +91,7 @@ class ParanuaraQueryTest_query_person(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=fetch_person_by_id,
             )
         )
@@ -105,7 +105,7 @@ class ParanuaraQueryTest_query_person(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=lambda id: person,
             )
         )
@@ -127,7 +127,7 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=fetch_person_by_id,
             )
         )
@@ -145,7 +145,7 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=None,
+                fetch_people_by_ids=None,
                 fetch_person_by_id=fetch_person_by_id,
             )
         )
@@ -160,7 +160,7 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=lambda person: [],
+                fetch_people_by_ids=lambda ids: [people.get(id) for id in ids],
                 fetch_person_by_id=lambda id: people.get(id),
             )
         )
@@ -173,15 +173,15 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_1_friend_in_common(self):
-        person1 = generate_person(1)
-        person2 = generate_person(2)
+        person1 = generate_person(1, friends=[3])
+        person2 = generate_person(2, friends=[3])
         friend_in_common = generate_person(3, eye_color="brown", has_died=False)
-        people = {1: person1, 2: person2}
+        people = {1: person1, 2: person2, 3: friend_in_common}
         query = ParanuaraQuery(
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_people_by_ids=lambda ids: [people.get(id) for id in ids],
                 fetch_person_by_id=lambda id: people.get(id),
             )
         )
@@ -196,21 +196,23 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_intersection(self):
-        person1 = generate_person(1)
-        person2 = generate_person(2)
+        person1 = generate_person(1, friends=[3, 4])
+        person2 = generate_person(2, friends=[3, 5])
         friend_in_common = generate_person(3, eye_color="brown", has_died=False)
         friend_of_person1 = generate_person(4, eye_color="brown", has_died=False)
         friend_of_person2 = generate_person(5, eye_color="brown", has_died=False)
-        people = {1: person1, 2: person2}
-        friends_of = {
-            1: [friend_in_common, friend_of_person1],
-            2: [friend_in_common, friend_of_person2],
+        people = {
+            1: person1,
+            2: person2,
+            3: friend_in_common,
+            4: friend_of_person1,
+            5: friend_of_person2,
         }
         query = ParanuaraQuery(
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=lambda person: friends_of.get(person.id),
+                fetch_people_by_ids=lambda ids: [people.get(id) for id in ids],
                 fetch_person_by_id=lambda id: people.get(id),
             )
         )
@@ -225,15 +227,15 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_eye_color_filter(self):
-        person1 = generate_person(1)
-        person2 = generate_person(2)
+        person1 = generate_person(1, friends=[3])
+        person2 = generate_person(2, friends=[3])
         friend_in_common = generate_person(3, eye_color="black", has_died=False)
-        people = {1: person1, 2: person2}
+        people = {1: person1, 2: person2, 3: friend_in_common}
         query = ParanuaraQuery(
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_people_by_ids=lambda ids: [people.get(id) for id in ids],
                 fetch_person_by_id=lambda id: people.get(id),
             )
         )
@@ -246,15 +248,15 @@ class ParanuaraQueryTest_query_join_friends(TestCase):
         )
 
     def test_has_died_filter(self):
-        person1 = generate_person(1)
-        person2 = generate_person(2)
+        person1 = generate_person(1, friends=[3])
+        person2 = generate_person(2, friends=[3])
         friend_in_common = generate_person(3, eye_color="brown", has_died=True)
-        people = {1: person1, 2: person2}
+        people = {1: person1, 2: person2, 3: friend_in_common}
         query = ParanuaraQuery(
             db=ParanuaraDB(
                 fetch_company_by_id=None,
                 fetch_people_by_company_id=None,
-                fetch_friends_of_person=lambda person: [friend_in_common],
+                fetch_people_by_ids=lambda ids: [people.get(id) for id in ids],
                 fetch_person_by_id=lambda id: people.get(id),
             )
         )

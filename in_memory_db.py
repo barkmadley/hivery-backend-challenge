@@ -25,5 +25,5 @@ class InMemoryDB(ParanuaraDB):
         except IndexError:
             raise PersonNotFound
 
-    def fetch_friends_of_person(self, person: Person) -> List[Person]:
-        return [self.people[person_id] for person_id in person.friends]
+    def fetch_people_by_ids(self, person_ids: List[int]) -> List[Person]:
+        return [self.people[person_id] for person_id in person_ids]

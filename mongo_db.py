@@ -42,6 +42,6 @@ class MongoDB(ParanuaraDB):
         else:
             return person_from_json(results[0])
 
-    def fetch_friends_of_person(self, person: Person) -> List[Person]:
+    def fetch_people_by_ids(self, person_ids: List[int]) -> List[Person]:
         # TODO: not efficient
-        return [self.fetch_person_by_id(person_id) for person_id in person.friends]
+        return [self.fetch_person_by_id(person_id) for person_id in person_ids]

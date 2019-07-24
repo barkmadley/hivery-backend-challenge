@@ -22,15 +22,13 @@ class ParanuaraQuery:
     ) -> JoinPeopleResponse:
         person1 = self.db.fetch_person_by_id(person1_id)
         person2 = self.db.fetch_person_by_id(person2_id)
-        friends_of_person1 = self.db.fetch_friends_of_person(person1)
-        friends_of_person2 = self.db.fetch_friends_of_person(person2)
-        friends_of_person2_ids = set(person.id for person in friends_of_person2)
+        friend_ids_in_common = set(person1.friends) & set(person2.friends)
+        friends_in_common_full = self.db.fetch_people_by_ids(list(friend_ids_in_common))
 
         friends_in_common = [
             friend
-            for friend in friends_of_person1
-            if friend.id in friends_of_person2_ids
-            and friend.eye_color == "brown"
+            for friend in friends_in_common_full
+            if friend.eye_color == "brown"
             and not friend.has_died
         ]
 
