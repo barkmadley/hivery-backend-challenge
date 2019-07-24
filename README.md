@@ -29,9 +29,23 @@ Successfully intalled appdirs-1.4.3 ... werkzeug-0.15.5
 (.venv) $ make run
 ```
 
+# Configuration options
+
 ## Configuring the location of the companies/people JSON files
 
 Modify the lines in `config.py` that set the constants `COMPANIES_FILE` and `PEOPLE_FILE`
+
+## Configuring the database
+
+Modify the lines in `config.py` that set `DB` and `MONGO_URI`.
+
+Setting `DB` to `"mongo"` will load the json blobs into the mongo specified by
+`MONGO_URI` and then serve the requests from that DB.
+
+Only a little bit of time has been spent optmising the mongo backend.
+
+Setting `DB` to `"inmemory"` will load the json blobs into memory and just do
+index based lookups
 
 # Manual Testing
 
