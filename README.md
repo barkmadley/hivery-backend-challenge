@@ -29,6 +29,10 @@ Successfully intalled appdirs-1.4.3 ... werkzeug-0.15.5
 (.venv) $ make run
 ```
 
+## Configuring the location of the companies/people JSON files
+
+Modify the lines in `config.py` that set the constants `COMPANIES_FILE` and `PEOPLE_FILE`
+
 # Manual Testing
 
 ```
