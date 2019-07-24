@@ -29,6 +29,81 @@ Successfully intalled appdirs-1.4.3 ... werkzeug-0.15.5
 (.venv) $ make run
 ```
 
+# Manual Testing
+
+```
+$ curl http://localhost:5000/company/1/employees | jq length
+7
+```
+
+```
+$ curl http://localhost:5000/person/1
+{
+  "age": "60",
+  "fruits": [],
+  "username": "deckermckenzie",
+  "vegetables": [
+    "cucumber",
+    "beetroot",
+    "carrot",
+    "celery"
+  ]
+}
+```
+
+```
+$ curl http://localhost:5000/person/1/friends_join/10
+{
+  "friends_in_common": [
+    {
+      ...
+      "email": "deckermckenzie@earthmark.com",
+      ...
+    }
+  ]
+  "person1": {
+    ...
+    "email": "deckermckenzie@earthmark.com",
+    ...
+  }
+  "person2": {
+    ...
+    "email": "kathleenclarke@earthmark.com",
+    ...
+  }
+}
+```
+
+```
+$ curl http://localhost:5000/company/arbitrary/employees
+404
+```
+
+```
+$ curl http://localhost:5000/company/100000/employees
+404
+```
+
+```
+$ curl http://localhost:5000/person/100000
+404
+```
+
+```
+$ curl http://localhost:5000/person/arbitrary
+404
+```
+
+```
+$ curl http://localhost:5000/person/10000/friends_join/10
+404
+```
+
+```
+$ curl http://localhost:5000/person/1/friends_join/100000
+404
+```
+
 # Paranuara Challenge
 
 Paranuara is a class-m planet. Those types of planets can support human life, for that reason the president of the Checktoporov decides to send some people to colonise this new planet and
