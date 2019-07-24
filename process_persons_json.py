@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 
 from flanker.addresslib import address
 
-from paranuara.person import from_json
+from paranuara.person import person_from_json
 from cli_util import add_people_arg
 
 
@@ -17,7 +17,7 @@ def main():
     email_domains = set()
     email_usernames = set()
     for person_dict in people:
-        person = from_json(person_dict)
+        person = person_from_json(person_dict)
         foods |= set(person.favourite_food)
         email_parsed = address.parse(person.email)
         if email_parsed:

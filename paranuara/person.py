@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import List, NamedTuple, Optional
+from typing import Any, Dict, List, NamedTuple, Optional
 
 Person = NamedTuple(
     "Person",
@@ -25,10 +25,12 @@ Person = NamedTuple(
         ("friends", List[int]),
         ("greeting", str),
         ("favourite_food", List[str]),
-        ("fruits", List[str]),
-        ("vegetables", List[str]),
     ],
 )
+
+
+def json_from_datetime(datetime: datetime) -> str:
+    return str(datetime)
 
 
 def datetime_from_json(str: str) -> datetime:
@@ -39,12 +41,24 @@ def decimal_from_json(str: str) -> Decimal:
     return Decimal(str.replace("$", "").replace(",", ""))
 
 
+def json_from_decimal(dec: Decimal) -> str:
+    return str(dec)
+
+
 def friend_index_from_json(dict) -> int:
     return dict["index"]
 
 
+def json_from_friend_index(index: int) -> Dict[str, int]:
+    return {"index": index}
+
+
 def friends_list_from_json(array) -> List[int]:
     return [friend_index_from_json(dict) for dict in array]
+
+
+def json_from_friends_list(array: List[int]) -> List[Dict[str, int]]:
+    return [json_from_friend_index(index) for index in array]
 
 
 # All foods seen in the given people.json
@@ -73,7 +87,7 @@ def fruits_from_foods(foods):
     return [food for food in foods if food in FRUITS]
 
 
-def from_json(dict) -> Person:
+def person_from_json(dict) -> Person:
     """
         Example person json:
         {
@@ -143,6 +157,12 @@ def from_json(dict) -> Person:
         friends=friends_list_from_json(dict["friends"]),
         greeting=dict["greeting"],
         favourite_food=dict["favouriteFood"],
-        fruits=fruits_from_foods(dict["favouriteFood"]),
-        vegetables=vegetables_from_foods(dict["favouriteFood"]),
     )
+
+
+def json_from_person(person: Person) -> Dict[str, Any]:
+    dict = person._asdict()
+    dict["balance"] = json_from_decimal(dict["balance"])
+    dict["friends"] = json_from_friends_list(dict["friends"])
+    dict["registered"] = json_from_datetime(dict["registered"])
+    return dict
