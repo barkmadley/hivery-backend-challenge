@@ -43,5 +43,7 @@ class MongoDB(ParanuaraDB):
             return person_from_json(results[0])
 
     def fetch_people_by_ids(self, person_ids: List[int]) -> List[Person]:
-        # TODO: not efficient
-        return [self.fetch_person_by_id(person_id) for person_id in person_ids]
+        return [
+            person_from_json(result)
+            for result in self.mongo.db.person.find({"index": {"$in": person_ids}})
+        ]
