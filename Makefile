@@ -24,3 +24,7 @@ typecheck:
 .PHONY: lint
 lint:
 	PYTHONPATH=${PYTHONPATH}:. pyflakes paranuara
+
+.PHONY: run
+run:
+	PYTHONPATH=${PYTHONPATH}:. FLASK_ENV=development flask run
