@@ -1,3 +1,34 @@
+# Setup Instructions:
+
+### 0. First time setup
+
+This python application depends on python3.
+
+```
+$ make setup
+Please run 'source .venv/bin/activate' to enter virtualenv for subsequent commands
+```
+
+### Install python dependencies
+
+```
+(.venv) $ make dep
+...
+Successfully intalled appdirs-1.4.3 ... werkzeug-0.15.5
+```
+
+### Testing
+
+```
+(.venv) $ make typecheck lint test
+```
+
+### Running the server
+
+```
+(.venv) $ make run
+```
+
 # Paranuara Challenge
 
 Paranuara is a class-m planet. Those types of planets can support human life, for that reason the president of the Checktoporov decides to send some people to colonise this new planet and
