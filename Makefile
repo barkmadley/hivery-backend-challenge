@@ -4,10 +4,13 @@ setup:
 	virtualenv .venv -p `which python3`
 	@echo "Please run 'source .venv/bin/activate' to enter virtualenv for subsequent commands"
 
-.PHONY: dep
-dep:
+.PHONY: find-dep
+find-deps:
 	pip install pip-tools
 	pip-compile
+
+.PHONY: dep
+dep:
 	pip install -r requirements.txt
 
 .PHONY: test
