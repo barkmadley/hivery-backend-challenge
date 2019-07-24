@@ -162,6 +162,14 @@ def person_from_json(dict) -> Person:
 
 def json_from_person(person: Person) -> Dict[str, Any]:
     dict = person._asdict()
+    dict["_id"] = dict["mongo_id"]
+    del dict["mongo_id"]
+    dict["index"] = dict["id"]
+    del dict["id"]
+    dict["eyeColor"] = dict["eye_color"]
+    del dict["eye_color"]
+    dict["favouriteFood"] = dict["favourite_food"]
+    del dict["favourite_food"]
     dict["balance"] = json_from_decimal(dict["balance"])
     dict["friends"] = json_from_friends_list(dict["friends"])
     dict["registered"] = json_from_datetime(dict["registered"])

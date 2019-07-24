@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import Any, Dict, NamedTuple
 
 Company = NamedTuple("Company", [("id", int), ("name", str)])
 
@@ -12,3 +12,10 @@ def company_from_json(dict):
         }
     """
     return Company(id=dict["index"], name=dict["company"])
+
+
+def json_from_company(company: Company) -> Dict[str, Any]:
+    return {
+        "index": company.id,
+        "company": company.name,
+    }
