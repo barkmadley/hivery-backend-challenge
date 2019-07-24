@@ -5,6 +5,6 @@ class BaseConfig:
 
 class DevConfig(BaseConfig):
     DEVELOPMENT = True
-    DB = "mongo"
+    # DB = "mongo"
     MONGO_URI = "mongodb://localhost:27017/paranuara"
 
