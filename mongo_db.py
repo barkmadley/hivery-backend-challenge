@@ -1,6 +1,6 @@
 from typing import List
 
-from paranuara.company import Company, from_json as company_from_json
+from paranuara.company import Company, company_from_json
 from paranuara.db import CompanyNotFound, ParanuaraDB, PersonNotFound
 from paranuara.person import Person, person_from_json
 

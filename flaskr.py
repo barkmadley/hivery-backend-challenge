@@ -8,7 +8,7 @@ from flask_pymongo import PyMongo
 
 from in_memory_db import InMemoryDB
 from mongo_db import MongoDB
-from paranuara.company import from_json as company_from_json
+from paranuara.company import Company, company_from_json
 from paranuara.db import CompanyNotFound, PersonNotFound
 from paranuara.person import (
     Person,

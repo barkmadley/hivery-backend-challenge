@@ -3,7 +3,7 @@ from typing import NamedTuple
 Company = NamedTuple("Company", [("id", int), ("name", str)])
 
 
-def from_json(dict):
+def company_from_json(dict):
     """
         Example company json:
         {
