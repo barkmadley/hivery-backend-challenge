@@ -1,11 +1,11 @@
-from collections import namedtuple
-from typing import List
+from typing import List, NamedTuple
 
 from paranuara.db import ParanuaraDB
 from paranuara.person import Person
 
-JoinPeopleResponse = namedtuple(
-    "JoinPeopleResponse", ["person1", "person2", "friends_in_common"]
+JoinPeopleResponse = NamedTuple(
+    "JoinPeopleResponse",
+    [("person1", Person), ("person2", Person), ("friends_in_common", List[Person])],
 )
 
 

@@ -16,7 +16,7 @@ test:
 
 .PHONY: typecheck
 typecheck:
-	PYTHONPATH=${PYTHONPATH}:. mypy .
+	PYTHONPATH=${PYTHONPATH}:. mypy . --ignore-missing-imports
 
 .PHONY: lint
 lint:
